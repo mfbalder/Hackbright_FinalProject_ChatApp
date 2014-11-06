@@ -8,10 +8,11 @@ app.secret_key = "ABC"
 
 room = None
 user = None
+connected_users = {}
 
 @app.route('/')
 def index():
-	return render_template('index.html')
+	return render_template('index.html', users = connected_users)
 
 @app.route('/login')
 def login():
@@ -22,6 +23,8 @@ def set_session():
 	user = request.args.get("user")
 	session["user"] = user
 	print session
+	connected_users.setdefault(session["user"], {})
+	print connected_users
 	return redirect("/")
 
 @socketio.on('my event', namespace='/chat')
@@ -42,12 +45,16 @@ def on_join(data):
 
 @socketio.on('connect', namespace='/chat')
 def test_connect():
+	global connected_users
 	print('Connected')
 	emit('connected', {'data': 'Connected'})
 
 @socketio.on('disconnect', namespace='/chat')
 def test_disconnect():
-    print('%s Client disconnected') % session['user']
+	global connected_users
+	del connected_users[session['user']]
+	print(connected_users)
+	print('%s Client disconnected') % session['user']
 
 if __name__ == '__main__':
     socketio.run(app)

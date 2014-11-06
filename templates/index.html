@@ -1,25 +1,64 @@
 <html>
+	<head>
+		<title>Online Instant Messaging Program</title>
+
+		<style>
+
+			body {
+
+				margin: 0;
+				padding: 0;
+
+			}
+
+			#online_users {
+
+				display: inline-block;
+				width: 30%;
+				height: 400px;
+				vertical-align: top;
+			}
+
+			#chat_box {
+
+				display: inline-block;
+				width: 60%;
+				height: 400px;
+			}
+
+
+		</style>
+	</head>
 <body>
 
-<!-- 		<form id="emit">
-		<input id="emit_data" type="text">
-		<input type="submit">
-	</form> -->
-
-	<div id="log">
-		<p>Hello</p>
+	<div id="online_users">
+		<h4>Connected Users</h4>
+		{% if users %}
+			<ul>
+			{% for user in users %}
+				<li><a href="#">{{ user }}</a></li>
+			{% endfor %}
+			</ul>
+		{% endif %}
 	</div>
 
-	<form id="send_message">
-		<input id="message" type="text" placeholder="Your message">
-		<input type="submit">
-	</form>
+	<div id="chat_box">
 
-	<form id="join_room">
-		User:<input type="text" id="user">
-		Room:<input type="text" id="room">
-		<input type="submit">
-	</form>
+		<div id="log">
+			<p>Hello</p>
+		</div>
+
+		<form id="send_message">
+			<input id="message" type="text" placeholder="Your message">
+			<input type="submit">
+		</form>
+
+		<form id="join_room">
+			User:<input type="text" id="user">
+			Room:<input type="text" id="room">
+			<input type="submit">
+		</form>
+	</div>
 
 
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -29,9 +68,6 @@
 
 	    var socket = io.connect('http://' + document.domain + ':' + location.port + "/chat");
 
-	    // socket.on('connected', function(msg) {
-	    // 	alert("Connected");
-	    // });
 
 	    $('form#send_message').submit(function(event){
 	    	event.preventDefault();
@@ -47,14 +83,7 @@
 	    	socket.emit('join', {'username': $('#user').val(), 'room': $('#room').val()});
 	    });
 
-	    //     $('#log').append('<p>Received: ' + msg.data + '</p>');
-	    // });
 
-	    // $('form#emit').submit(function(event) {
-	    // 	// debugger;
-	    //     socket.emit('my event', {data: $('#emit_data').val()});
-	    //     return false;
-	    // });
 
 	});
 	</script>
