@@ -65,19 +65,22 @@
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
 	<script>
 	$(document).ready(function(){
-
+		// connect the socket
 	    var socket = io.connect('http://' + document.domain + ':' + location.port + "/chat");
 
-
+	    // when the user sends a message, relay that message to the server
 	    $('form#send_message').submit(function(event){
 	    	event.preventDefault();
 	    	socket.emit('my event', {data: $("#message").val()});
 	    });
 
+	    // when the client gets that message back from the server,
+	    // display it in the log
 	    socket.on('my response', function(response){
 	    	$('#log').append('<p>' + response.user + ': ' + response.data + '</p>');
 	    });
 
+	    // when the user submits a room to join, call the join_room function on the server
 	    $('form#join_room').submit(function(event){
 	    	event.preventDefault();
 	    	socket.emit('join', {'username': $('#user').val(), 'room': $('#room').val()});

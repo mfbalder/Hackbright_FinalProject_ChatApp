@@ -20,12 +20,16 @@ def login():
 
 @app.route("/set_session")
 def set_session():
+	# get the user's login name, and set that to the session
 	user = request.args.get("user")
 	session["user"] = user
 	print session
+
+	# add that user to the list of connected users
 	connected_users.setdefault(session["user"], {})
 	print connected_users
 	return redirect("/")
+
 
 @socketio.on('my event', namespace='/chat')
 def test_message(message):
@@ -52,8 +56,8 @@ def test_connect():
 @socketio.on('disconnect', namespace='/chat')
 def test_disconnect():
 	global connected_users
-	del connected_users[session['user']]
-	print(connected_users)
+	# del connected_users[session['user']]
+	# print(connected_users)
 	print('%s Client disconnected') % session['user']
 
 if __name__ == '__main__':
