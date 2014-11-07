@@ -12,21 +12,21 @@
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
 	<script>
 
-	$(document).ready(function() {
-		// connect the socket
-	    var socket = io.connect('http://' + document.domain + ':' + location.port + "/chat");
+	// $(document).ready(function() {
+	// 	// connect the socket
+	//     var socket = io.connect('http://' + document.domain + ':' + location.port + "/chat");
 
-	    // when the user logs in, add them to their own room
-		$('#login_form').submit(function(event) {
-			socket.emit(
-				'join room', 
-				{'username': $('#user').val(), 
-				 'room': $('#user').val()
-				});
-			console.log("The user is being added to a room.");
-			// alert("hi");
-		});
-	});
+	//     // when the user logs in, add them to their own room
+	// 	$('#login_form').submit(function(event) {
+	// 		socket.emit(
+	// 			'join room', 
+	// 			{'username': $('#user').val(), 
+	// 			 'room': $('#user').val()
+	// 			});
+	// 		console.log("The user is being added to a room.");
+	// 		// alert("hi");
+	// 	});
+	// });
 	</script>
 
 </body>

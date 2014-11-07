@@ -7,12 +7,14 @@ socketio = SocketIO(app)
 app.secret_key = "ABC"
 
 room = None
+# connected_users --> {username: ['room1 they're in', 'room2']}
 connected_users = {}
 
 @app.route('/')
 def index():
 	user = session.get("user")   # "joel" or None
 	print "index: user=", user
+	# print "connected users=", connected_users
 	return render_template('index.html', 
 		users = connected_users,
 		user=user)
@@ -30,8 +32,8 @@ def set_session():
 	print session
 
 	# add that user to the list of connected users
-	# connected_users.setdefault(session["user"], {})
-	# print connected_users
+	connected_users.setdefault(session["user"], [])
+	print "connected users in set_session", connected_users
 	return redirect("/")
 
 
@@ -39,7 +41,7 @@ def set_session():
 def test_message(message):
 	global room
 	print message['data']
-	emit('my response', {'data': message['data'], 'user': session['user']}, room=room)
+	emit('my response', {'data': message['data'], 'user': session['user']})
 
 # @socketio.on('get command', namespace='/chat')
 # def get_command(data):
@@ -55,17 +57,26 @@ def test_message(message):
 
 @socketio.on('join room', namespace='/chat')
 def on_join(data):
-	global room
-	print data
+	# global connected_users
 	user = data['username']
 	room = data['room']
 	join_room(room)
-	print "Room joined %s" % room
-	emit('my response', {'data': "Success!", 'user': session['user']}, room=room)
+	print "%s has joined room: %s" % (user, room)
+	connected_users.setdefault(user, []).append(room)
+	print "connected users in join room", connected_users
+	# print "I am %s" % session["user"]
+	emit('my response', {'data': "Success! Connected to %s" % room, 'user': session['user']}, room=room)
+
+@socketio.on('link users', namespace='/chat')
+def link_users(data):
+	connecting_user = data["connecting_user"] # ben
+	receiving_user = data["receiving_user"] # micki
+	new_room = data["new_room"] # mfbalderbkinkead
+	emit('make connection', {'connecting_user': connecting_user, 'receiving_user': receiving_user, 'new_room': new_room}, broadcast=True)
 
 @socketio.on('connect', namespace='/chat')
 def test_connect():
-	global connected_users
+	# global connected_users
 	print('Connected')
 	emit('connected', {'data': 'Connected'})
 
