@@ -7,12 +7,15 @@ socketio = SocketIO(app)
 app.secret_key = "ABC"
 
 room = None
-user = None
 connected_users = {}
 
 @app.route('/')
 def index():
-	return render_template('index.html', users = connected_users)
+	user = session.get("user")   # "joel" or None
+	print "index: user=", user
+	return render_template('index.html', 
+		users = connected_users,
+		user=user)
 
 @app.route('/login')
 def login():
@@ -22,24 +25,37 @@ def login():
 def set_session():
 	# get the user's login name, and set that to the session
 	user = request.args.get("user")
+	print "set_session: user=", user
 	session["user"] = user
 	print session
 
 	# add that user to the list of connected users
-	connected_users.setdefault(session["user"], {})
-	print connected_users
+	# connected_users.setdefault(session["user"], {})
+	# print connected_users
 	return redirect("/")
 
 
 @socketio.on('my event', namespace='/chat')
 def test_message(message):
-	global user
+	global room
 	print message['data']
 	emit('my response', {'data': message['data'], 'user': session['user']}, room=room)
 
-@socketio.on('join', namespace='/chat')
+# @socketio.on('get command', namespace='/chat')
+# def get_command(data):
+# 	# global room
+# 	other_user = data['other_user']
+# 	command = data['command']
+# 	self = session['user']
+# 	connected_room = other_user + self
+# 	print "********** self: %s, other_user: %s, command: %s, connected room: %s" % (self, other_user, command, connected_room)
+# 	if command == "join":
+# 		emit('send command', {'room': connected_room}, room=self)
+# 		emit('send command', {'room': connected_room}, room=other_user)
+
+@socketio.on('join room', namespace='/chat')
 def on_join(data):
-	global room, user
+	global room
 	print data
 	user = data['username']
 	room = data['room']
@@ -55,10 +71,7 @@ def test_connect():
 
 @socketio.on('disconnect', namespace='/chat')
 def test_disconnect():
-	global connected_users
-	# del connected_users[session['user']]
-	# print(connected_users)
-	print('%s Client disconnected') % session['user']
+	print('%s Client disconnected') % session["user"]
 
 if __name__ == '__main__':
     socketio.run(app)

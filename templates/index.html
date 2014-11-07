@@ -36,7 +36,7 @@
 		{% if users %}
 			<ul>
 			{% for user in users %}
-				<li><a href="#">{{ user }}</a></li>
+				<li><a class="user_link" id="{{ user }}" href="#">{{ user }}</a></li>
 			{% endfor %}
 			</ul>
 		{% endif %}
@@ -65,8 +65,22 @@
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
 	<script>
 	$(document).ready(function(){
+
+		var logged_in_user="{{ user }}";
+
+
 		// connect the socket
 	    var socket = io.connect('http://' + document.domain + ':' + location.port + "/chat");
+
+		socket.emit(
+				'join room', 
+				{'username': logged_in_user, 
+				 'room': logged_in_user
+				});
+		console.log("The " + logged_in_user + " is being added to a room.");
+
+
+
 
 	    // when the user sends a message, relay that message to the server
 	    $('form#send_message').submit(function(event){
@@ -83,7 +97,16 @@
 	    // when the user submits a room to join, call the join_room function on the server
 	    $('form#join_room').submit(function(event){
 	    	event.preventDefault();
-	    	socket.emit('join', {'username': $('#user').val(), 'room': $('#room').val()});
+	    	socket.emit('join room', {'username': $('#user').val(), 'room': $('#room').val()});
+	    });
+
+	    $(".user_link").click(function(event){
+	    	var user_id = $(this).attr('id');
+	    	socket.emit('get command', {'command': 'join', 'other_user': user_id});
+	    });
+
+	    socket.on('send command', function(response){
+	    	alert(response);
 	    });
 
 
