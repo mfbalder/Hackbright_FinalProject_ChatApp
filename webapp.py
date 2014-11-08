@@ -73,12 +73,12 @@ def on_join(data):
 	# print "I am %s" % session["user"]
 	emit('my response', {'data': "Success! Connected to %s" % room, 'user': session['user']}, room="bkinkeadmfbalder")
 
-@socketio.on('link users', namespace='/chat')
-def link_users(data):
-	connecting_user = data["connecting_user"] # ben
-	receiving_user = data["receiving_user"] # micki
-	new_room = data["new_room"] # mfbalderbkinkead
-	emit('make connection', {'connecting_user': connecting_user, 'receiving_user': receiving_user, 'new_room': new_room}, room=receiving_user)
+# @socketio.on('link users', namespace='/chat')
+# def link_users(data):
+# 	connecting_user = data["connecting_user"] # ben
+# 	receiving_user = data["receiving_user"] # micki
+# 	new_room = data["new_room"] # mfbalderbkinkead
+# 	emit('make connection', {'connecting_user': connecting_user, 'receiving_user': receiving_user, 'new_room': new_room}, room=receiving_user)
 
 @socketio.on('connect', namespace='/chat')
 def test_connect():

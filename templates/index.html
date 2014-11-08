@@ -84,9 +84,6 @@
 			// send command to user_to_talk_to's room
 			socket.emit('receive command', {'command': 'J', 'body':new_room, 'room': user_to_talk_to});
 			socket.emit('receive command', {'command': 'J', 'body':new_room, 'room': logged_in_user});
-			// command: join new_room
-			// send command to my room
-			// command: join_new room
 		});
 
 		socket.on('interpret command', function(data){
@@ -97,6 +94,7 @@
 				console.log("join");
 				var new_room = command_body
 				socket.emit('join room', {'username': logged_in_user, 'room': new_room}); 
+				$('#chat_box').removeClass("hidden");
 			}
 		});
 
@@ -125,21 +123,21 @@
 	 //    	$('#chat_box').removeClass("hidden");
 	 //    });
 
-		// if the current user receives a connection request
-	    socket.on('make connection', function(response){
-	    	console.log("receiving_user: " + response.receiving_user);
-	    	if(response.receiving_user == logged_in_user){
-	    		console.log(response);
-	    		// have them join the new room
-	    		socket.emit('join room', {'username': response.receiving_user, 'room': response.new_room});
-	    		// make their chat box visible
-	    		$('#chat_box').removeClass("hidden");
-	    	}
-	    	else {
-	    		console.log("nada");
-	    	}
+		// // if the current user receives a connection request
+	 //    socket.on('make connection', function(response){
+	 //    	console.log("receiving_user: " + response.receiving_user);
+	 //    	if(response.receiving_user == logged_in_user){
+	 //    		console.log(response);
+	 //    		// have them join the new room
+	 //    		socket.emit('join room', {'username': response.receiving_user, 'room': response.new_room});
+	 //    		// make their chat box visible
+	 //    		$('#chat_box').removeClass("hidden");
+	 //    	}
+	 //    	else {
+	 //    		console.log("nada");
+	 //    	}
 	    	
-	    });
+	 //    });
 
 
 
