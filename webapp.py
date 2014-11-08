@@ -14,7 +14,6 @@ connected_users = {}
 def index():
 	user = session.get("user")   # "joel" or None
 	print "index: user=", user
-	# print "connected users=", connected_users
 	return render_template('index.html', 
 		users = connected_users,
 		user=user)
@@ -43,6 +42,12 @@ def test_message(message):
 	global room
 	print message['data']
 	emit('my response', {'data': message['data'], 'user': session['user']}, room="bkinkeadmfbalder")
+
+
+@socketio.on('receive command', namespace='/chat')
+def receive_command(command):
+	print command
+	emit('interpret command', {'command': command['command'], 'body': command['body']}, room=command['room'])
 
 # @socketio.on('get command', namespace='/chat')
 # def get_command(data):

@@ -25,7 +25,7 @@
 			.hidden {
 				visibility: hidden;
 			}
-			
+
 		</style>
 	</head>
 <body>
@@ -78,25 +78,52 @@
 				});
 		console.log("The " + logged_in_user + " is being added to room:" + logged_in_user);
 
-		// when the current user clicks on another user's username
-		 $(".user_link").click(function(event){
-	    	var user_to_talk_to = $(this).attr('id');
-	    	// establish a new room for the 2 users to share
-	    	if(user_to_talk_to < logged_in_user){
-	    		var new_room = user_to_talk_to + logged_in_user;
-	    	} else {
-	    		var new_room = logged_in_user + user_to_talk_to;
-	    	}
-	    	console.log(logged_in_user + "has been added to" + new_room)
+		$(".user_link").click(function(event){
+			var user_to_talk_to = $(this).attr('id');
+			var new_room = "bkinkeadmfbalder"
+			// send command to user_to_talk_to's room
+			socket.emit('receive command', {'command': 'J', 'body':new_room, 'room': user_to_talk_to});
+			socket.emit('receive command', {'command': 'J', 'body':new_room, 'room': logged_in_user});
+			// command: join new_room
+			// send command to my room
+			// command: join_new room
+		});
 
-	    	// current user joins the new room
-	    	socket.emit('join room', {'username': logged_in_user, 'room': new_room});
-	    	// current user tells other user to join the new room
-	    	socket.emit('link users', {'command': 'join', 'connecting_user': logged_in_user, 'receiving_user': user_to_talk_to, 'new_room': new_room});
+		socket.on('interpret command', function(data){
+			var command = data.command
+			var command_body = data.body
+			console.log(command + " " + command_body);
+			if(command === 'J'){
+				console.log("join");
+				var new_room = command_body
+				socket.emit('join room', {'username': logged_in_user, 'room': new_room}); 
+			}
+		});
 
-	    	// make a chat box visible
-	    	$('#chat_box').removeClass("hidden");
-	    });
+
+
+
+
+
+		// // when the current user clicks on another user's username
+		//  $(".user_link").click(function(event){
+	 //    	var user_to_talk_to = $(this).attr('id');
+	 //    	// establish a new room for the 2 users to share
+	 //    	if(user_to_talk_to < logged_in_user){
+	 //    		var new_room = user_to_talk_to + logged_in_user;
+	 //    	} else {
+	 //    		var new_room = logged_in_user + user_to_talk_to;
+	 //    	}
+	 //    	console.log(logged_in_user + "has been added to" + new_room)
+
+	 //    	// current user joins the new room
+	 //    	socket.emit('join room', {'username': logged_in_user, 'room': new_room});
+	 //    	// current user tells other user to join the new room
+	 //    	socket.emit('link users', {'command': 'join', 'connecting_user': logged_in_user, 'receiving_user': user_to_talk_to, 'new_room': new_room});
+
+	 //    	// make a chat box visible
+	 //    	$('#chat_box').removeClass("hidden");
+	 //    });
 
 		// if the current user receives a connection request
 	    socket.on('make connection', function(response){
