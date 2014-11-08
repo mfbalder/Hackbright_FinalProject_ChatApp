@@ -99,49 +99,6 @@
 		});
 
 
-
-
-
-
-		// // when the current user clicks on another user's username
-		//  $(".user_link").click(function(event){
-	 //    	var user_to_talk_to = $(this).attr('id');
-	 //    	// establish a new room for the 2 users to share
-	 //    	if(user_to_talk_to < logged_in_user){
-	 //    		var new_room = user_to_talk_to + logged_in_user;
-	 //    	} else {
-	 //    		var new_room = logged_in_user + user_to_talk_to;
-	 //    	}
-	 //    	console.log(logged_in_user + "has been added to" + new_room)
-
-	 //    	// current user joins the new room
-	 //    	socket.emit('join room', {'username': logged_in_user, 'room': new_room});
-	 //    	// current user tells other user to join the new room
-	 //    	socket.emit('link users', {'command': 'join', 'connecting_user': logged_in_user, 'receiving_user': user_to_talk_to, 'new_room': new_room});
-
-	 //    	// make a chat box visible
-	 //    	$('#chat_box').removeClass("hidden");
-	 //    });
-
-		// // if the current user receives a connection request
-	 //    socket.on('make connection', function(response){
-	 //    	console.log("receiving_user: " + response.receiving_user);
-	 //    	if(response.receiving_user == logged_in_user){
-	 //    		console.log(response);
-	 //    		// have them join the new room
-	 //    		socket.emit('join room', {'username': response.receiving_user, 'room': response.new_room});
-	 //    		// make their chat box visible
-	 //    		$('#chat_box').removeClass("hidden");
-	 //    	}
-	 //    	else {
-	 //    		console.log("nada");
-	 //    	}
-	    	
-	 //    });
-
-
-
-
 	    // when the user sends a message, relay that message to the server
 	    $('form#send_message').submit(function(event){
 	    	event.preventDefault();
