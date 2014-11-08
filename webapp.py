@@ -25,6 +25,7 @@ def login():
 
 @app.route("/set_session")
 def set_session():
+	global conn
 	# get the user's login name, and set that to the session
 	user = request.args.get("user")
 	print "set_session: user=", user
@@ -41,7 +42,7 @@ def set_session():
 def test_message(message):
 	global room
 	print message['data']
-	emit('my response', {'data': message['data'], 'user': session['user']})
+	emit('my response', {'data': message['data'], 'user': session['user']}, room="bkinkeadmfbalder")
 
 # @socketio.on('get command', namespace='/chat')
 # def get_command(data):
@@ -65,14 +66,14 @@ def on_join(data):
 	connected_users.setdefault(user, []).append(room)
 	print "connected users in join room", connected_users
 	# print "I am %s" % session["user"]
-	emit('my response', {'data': "Success! Connected to %s" % room, 'user': session['user']}, room=room)
+	emit('my response', {'data': "Success! Connected to %s" % room, 'user': session['user']}, room="bkinkeadmfbalder")
 
 @socketio.on('link users', namespace='/chat')
 def link_users(data):
 	connecting_user = data["connecting_user"] # ben
 	receiving_user = data["receiving_user"] # micki
 	new_room = data["new_room"] # mfbalderbkinkead
-	emit('make connection', {'connecting_user': connecting_user, 'receiving_user': receiving_user, 'new_room': new_room}, broadcast=True)
+	emit('make connection', {'connecting_user': connecting_user, 'receiving_user': receiving_user, 'new_room': new_room}, room=receiving_user)
 
 @socketio.on('connect', namespace='/chat')
 def test_connect():

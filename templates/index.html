@@ -22,7 +22,10 @@
 				height: 400px;
 			}
 
-
+			.hidden {
+				visibility: hidden;
+			}
+			
 		</style>
 	</head>
 <body>
@@ -38,10 +41,10 @@
 		{% endif %}
 	</div>
 
-	<div id="chat_box">
+	<div id="chat_box" class="hidden">
 
 		<div id="log">
-			<p>User: Message</p>
+			<p>Log</p>
 		</div>
 
 		<form id="send_message">
@@ -49,34 +52,67 @@
 			<input type="submit">
 		</form>
 
-		<form id="join_room">
+		<!-- <form id="join_room">
 			User:<input type="text" id="user">
 			Room:<input type="text" id="room">
 			<input type="submit">
-		</form>
+		</form> -->
 	</div>
-
-
-<!-- 	<button id="talk_to_micki">talk to micki</button> -->
 
 
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
 	<script>
 	$(document).ready(function(){
-
+		// sets the current user
 		var logged_in_user="{{ user }}";
 
 		// connect the socket
 	    var socket = io.connect('http://' + document.domain + ':' + location.port + "/chat");
 
-	    // joins the logged in user to their own personal room
+	    // joins the current user to their own personal room
 		socket.emit(
 				'join room', 
 				{'username': logged_in_user, 
 				 'room': logged_in_user
 				});
 		console.log("The " + logged_in_user + " is being added to room:" + logged_in_user);
+
+		// when the current user clicks on another user's username
+		 $(".user_link").click(function(event){
+	    	var user_to_talk_to = $(this).attr('id');
+	    	// establish a new room for the 2 users to share
+	    	if(user_to_talk_to < logged_in_user){
+	    		var new_room = user_to_talk_to + logged_in_user;
+	    	} else {
+	    		var new_room = logged_in_user + user_to_talk_to;
+	    	}
+	    	console.log(logged_in_user + "has been added to" + new_room)
+
+	    	// current user joins the new room
+	    	socket.emit('join room', {'username': logged_in_user, 'room': new_room});
+	    	// current user tells other user to join the new room
+	    	socket.emit('link users', {'command': 'join', 'connecting_user': logged_in_user, 'receiving_user': user_to_talk_to, 'new_room': new_room});
+
+	    	// make a chat box visible
+	    	$('#chat_box').removeClass("hidden");
+	    });
+
+		// if the current user receives a connection request
+	    socket.on('make connection', function(response){
+	    	console.log("receiving_user: " + response.receiving_user);
+	    	if(response.receiving_user == logged_in_user){
+	    		console.log(response);
+	    		// have them join the new room
+	    		socket.emit('join room', {'username': response.receiving_user, 'room': response.new_room});
+	    		// make their chat box visible
+	    		$('#chat_box').removeClass("hidden");
+	    	}
+	    	else {
+	    		console.log("nada");
+	    	}
+	    	
+	    });
 
 
 
@@ -99,30 +135,8 @@
 	    	socket.emit('join room', {'username': $('#user').val(), 'room': $('#room').val()});
 	    });
 
-	    $(".user_link").click(function(event){
-	    	var user_to_talk_to = $(this).attr('id');
-	    	if(user_to_talk_to < logged_in_user){
-	    		var new_room = user_to_talk_to + logged_in_user;
-	    	} else {
-	    		var new_room = logged_in_user + user_to_talk_to;
-	    	}
-	    	console.log(logged_in_user + "has been added to" + new_room)
-	    	socket.emit('join room', {'username': logged_in_user, 'room': new_room});
+	   
 
-	    	socket.emit('link users', {'command': 'join', 'connecting_user': logged_in_user, 'receiving_user': user_to_talk_to, 'new_room': new_room});
-	    });
-
-	    socket.on('make connection', function(response){
-	    	console.log("receiving_user: " + response.receiving_user);
-	    	if(response.receiving_user == logged_in_user){
-	    		console.log(response);
-	    		socket.emit('join room', {'username': response.receiving_user, 'room': response.new_room});
-	    	}
-	    	else {
-	    		console.log("nada");
-	    	}
-	    	
-	    });
 
 	    // when click talk-to-micki:
 	    //   send to micki room a "go join a room: joel_micki"
