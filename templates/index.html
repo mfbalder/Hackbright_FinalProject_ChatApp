@@ -111,6 +111,7 @@
 	    $('form#send_message').submit(function(event){
 	    	event.preventDefault();
 	    	socket.emit('my event', {data: $("#message").val(), 'room': current_room});
+	    	$("#message").val("");
 	    });
 
 	    // when the client gets that message back from the server,
