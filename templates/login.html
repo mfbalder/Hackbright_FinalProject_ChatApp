@@ -1,33 +1,52 @@
 <html>
 <head>
-	
+	<style>
+			body {
+				margin: 0;
+				padding: 0;
+			}
+
+			#login_box {
+				width: 30%;
+				height: 200px;
+				background-color: blue;
+				margin: 10% auto;
+				border: 1px solid black;
+				border-radius: 10px;
+				text-align: center;
+				color: white;
+			}
+
+			#login_box div {
+				display: block;
+				margin: 8% auto;
+			}
+
+			#login_box label, #login_box input {
+				display: inline-block;
+			}
+		</style>
 </head>
 <body>
-	<form id="login_form" action="/set_session">
-		Username<input type="text" name="user" id="user">
-		<input type="submit">
-	</form>
+	<div id="login_box">
+		<h4>Login</h4>
+		<form id="login_form" action="/set_session">
+			<div>
+				<label for="user">Username</label>
+				<input type="text" name="user" id="user">
+			</div>
+			<div>
+				<label for="password">Password</label>
+				<input type="text" name="password" id="password">
+			</div>
+			<div>
+				<input type="submit">
+			</div>
+		</form>
+	</div>
 
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
-	<script>
-
-	// $(document).ready(function() {
-	// 	// connect the socket
-	//     var socket = io.connect('http://' + document.domain + ':' + location.port + "/chat");
-
-	//     // when the user logs in, add them to their own room
-	// 	$('#login_form').submit(function(event) {
-	// 		socket.emit(
-	// 			'join room', 
-	// 			{'username': $('#user').val(), 
-	// 			 'room': $('#user').val()
-	// 			});
-	// 		console.log("The user is being added to a room.");
-	// 		// alert("hi");
-	// 	});
-	// });
-	</script>
-
+	
 </body>
 </html>
