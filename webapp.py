@@ -13,8 +13,9 @@ connected_users = {}
 def index():
 	user = session.get("user")   # "joel" or None
 	print "index: user=", user
+	users_to_display = [x for x in connected_users if x != user]
 	return render_template('index.html', 
-		users = connected_users,
+		users = users_to_display,
 		user=user)
 
 @app.route('/login')
