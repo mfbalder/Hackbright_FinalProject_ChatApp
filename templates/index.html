@@ -88,23 +88,6 @@
 		// 	);
 		// }
 
-		// when the current user clicks on a connected user
-		$(".user_link").click(function(event){
-			var user_to_talk_to = $(this).attr('id');
-			// create a new room name for the two users to share
-			if(user_to_talk_to < logged_in_user){
-				var new_room = user_to_talk_to + logged_in_user;
-			} 
-			else {
-				var new_room = logged_in_user + user_to_talk_to;
-			}
-
-			// send command to user_to_talk_to's room
-			socket.emit('receive command', {'command': 'J', 'body':new_room, 'room': user_to_talk_to});
-			// send command to logged_in_user's room
-			socket.emit('receive command', {'command': 'J', 'body':new_room, 'room': logged_in_user});
-		});
-
 		// when a user's room receives a command
 		socket.on('interpret command', function(data){
 			var command = data.command
@@ -119,9 +102,26 @@
 				// establish that this new room is the room we're currently talking in
 				current_room = new_room
 			}
-			else if(command === 'UL'){
-				console.log("UL");
+			if(command === 'UL'){
+				$("#online_users").load("/refresh_users?user=" + logged_in_user);
 			}
+		});
+
+		// when the current user clicks on a connected user
+		$(document).on('click', '.user_link', function(event) {
+			var user_to_talk_to = $(this).attr('id');
+			// create a new room name for the two users to share
+			if(user_to_talk_to < logged_in_user){
+				var new_room = user_to_talk_to + logged_in_user;
+			} 
+			else {
+				var new_room = logged_in_user + user_to_talk_to;
+			}
+
+			// send command to user_to_talk_to's room
+			socket.emit('receive command', {'command': 'J', 'body':new_room, 'room': user_to_talk_to});
+			// send command to logged_in_user's room
+			socket.emit('receive command', {'command': 'J', 'body':new_room, 'room': logged_in_user});
 		});
 
 

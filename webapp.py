@@ -22,7 +22,6 @@ def index():
 def login():
 	return render_template("login.html")
 
-
 @app.route("/set_session")
 def set_session():
 	global connected_users
@@ -39,7 +38,9 @@ def set_session():
 
 @app.route("/refresh_users")
 def refresh_connected_users():
-	return "<li>1</li>" 
+	global connected_users
+	user = request.args.get("user")
+	return render_template("logged_in_users.html", user=user, users=[x for x in connected_users if x != user])
 
 
 @socketio.on('my event', namespace='/chat')
@@ -64,7 +65,9 @@ def on_join(data):
 		connected_users.setdefault(user, []).append(room)
 	print "connected users in join room", connected_users
 	emit('message to display', {'message': "Success! Connected to %s" % room, 'user': session['user']}, room=room)
-	# emit('interpret command', {'command': 'UL', 'body': [x for x in connected_users if x != user]}, broadcast=True)
+	for key in connected_users:
+		print key
+		emit('interpret command', {'command': 'UL', 'body': "None"}, room=key)
 
 @socketio.on('connect', namespace='/chat')
 def test_connect():
