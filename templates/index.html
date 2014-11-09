@@ -5,15 +5,17 @@
 		<style>
 
 			body {
-				margin: 0;
+				margin: 0 1%;
 				padding: 0;
 			}
 
 			#online_users {
 				display: inline-block;
-				width: 30%;
+				width: 20%;
 				height: 400px;
 				vertical-align: top;
+				border: 1px solid black;
+				padding: 1% 2%;
 			}
 
 			#chat_box {
@@ -61,6 +63,9 @@
 		// sets the current user and current room
 		var logged_in_user="{{ user }}";
 		var current_room = "";
+		var connected_users = ["{{ users }}"];
+
+
 
 		// connect the socket
 	    var socket = io.connect('http://' + document.domain + ':' + location.port + "/chat");
@@ -72,6 +77,16 @@
 				 'room': logged_in_user
 				});
 		console.log("The " + logged_in_user + " is being added to room:" + logged_in_user);
+
+		// tell all clients to update their connected users
+		// for(var i = 0; i < connected_users.length; i++){
+		// 	socket.emit(
+		// 		'receive command',
+		// 		{'command': 'UL',
+		// 		 'body': logged_in_user,
+		// 		 'room': connected_users[i]}
+		// 	);
+		// }
 
 		// when the current user clicks on a connected user
 		$(".user_link").click(function(event){
@@ -104,6 +119,9 @@
 				// establish that this new room is the room we're currently talking in
 				current_room = new_room
 			}
+			else if(command === 'UL'){
+				console.log("UL");
+			}
 		});
 
 
@@ -120,13 +138,6 @@
 	    	$('#log').append('<p>' + response.user + ': ' + response.message + '</p>');
 	    });
 
-	    // when click talk-to-micki:
-	    //   send to micki room a "go join a room: joel_micki"
-        //   join that room
-
-	    // add a so.on("go join a room") that joins the data
-	    // room
-        //   you join that room
 
 	});
 	</script>
