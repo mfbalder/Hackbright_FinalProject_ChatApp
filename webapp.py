@@ -6,14 +6,14 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 app.secret_key = "ABC"
 
-# connected_users --> {username: ['room1 they're in', 'room2']}
+# connected_users --> {username: ['room1 they're in', 'room2', 'room3']}
 connected_users = {}
 
 @app.route('/')
 def index():
 	user = session.get("user")   # "joel" or None
-	print "index: user=", user
-	users_to_display = [x for x in connected_users if x != user]
+	# print "index: user=", user
+	users_to_display = [u for u in connected_users if u != user]
 	return render_template('index.html', 
 		users = users_to_display,
 		user=user)
@@ -25,7 +25,8 @@ def login():
 @app.route("/set_session")
 def set_session():
 	global connected_users
-	# get the user's login name, and set that to the session
+
+	# get the current logged in user, and set that to the session
 	user = request.args.get("user")
 	print "set_session: user=", user
 	session["user"] = user
@@ -38,6 +39,7 @@ def set_session():
 
 @app.route("/refresh_users")
 def refresh_connected_users():
+	"""Whenever a new user logs into the system, this is called to refresh all users' connected list"""
 	global connected_users
 	user = request.args.get("user")
 	return render_template("logged_in_users.html", user=user, users=[x for x in connected_users if x != user])
@@ -45,12 +47,14 @@ def refresh_connected_users():
 
 @socketio.on('my event', namespace='/chat')
 def test_message(message):
+	"""Called when a message is submitted, sends message back to the client to be displayed"""
 	print message['data']
 	emit('message to display', {'message': message['data'], 'user': session['user']}, room=message['room'])
 
 
 @socketio.on('receive command', namespace='/chat')
 def receive_command(command):
+	"""Sends any commands (join, update list, etc.) to a user's room to be interpreted"""
 	print command
 	emit('interpret command', {'command': command['command'], 'body': command['body']}, room=command['room'])
 
