@@ -1,35 +1,51 @@
 <html>
 <head>
+	<link href='http://fonts.googleapis.com/css?family=Quicksand:400,700' rel='stylesheet' type='text/css'>
 	<style>
 			body {
 				margin: 0;
 				padding: 0;
+				background-color: #ddeeee;
 			}
 
 			#login_box {
 				width: 30%;
 				height: 200px;
-				background-color: blue;
+				background-color: #776688;
 				margin: 10% auto;
-				border: 1px solid black;
+				border: 3px solid #333344;
 				border-radius: 10px;
 				text-align: center;
 				color: white;
+				font-family: 'Quicksand', sans-serif;
+			}
+
+			#login_box p {
+				font-size: 30px;
+				margin-bottom: 5px;
+				margin-top: 18px;
 			}
 
 			#login_box div {
 				display: block;
-				margin: 8% auto;
+				margin: 5% auto;
 			}
 
 			#login_box label, #login_box input {
 				display: inline-block;
 			}
+
+			#login_box input[type="submit"] {
+				font-family: 'Quicksand', sans-serif;
+				font-size: 15px;
+				border: 1px solid #333344;
+				margin-top: 5px;
+			}
 		</style>
 </head>
 <body>
 	<div id="login_box">
-		<h4>Login</h4>
+		<p>Login</p>
 		<form id="login_form" action="/set_session">
 			<div>
 				<label for="user">Username</label>
