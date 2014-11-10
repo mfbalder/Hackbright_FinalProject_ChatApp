@@ -36,16 +36,16 @@
 		<a href="#" id="logout">Logout</a>
 	</div>
 
-	<div id="page_body">
 	{% block body %}
 	{% endblock %}
-	</div>
+
 
 	
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script>
-		$("#logout").click(function(event){
-			alert("wtf");
+		// when a user logs out, run the logout route and send them to the login page
+		$(document).on('click', '#logout', function(event){
+			alert("woohoo");
 			$("body").load("/logout");
 		});
 	</script>
