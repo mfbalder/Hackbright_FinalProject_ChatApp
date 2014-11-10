@@ -30,8 +30,8 @@ def logout():
 	del connected_users[user]
 	print "connected_users in logout: ", connected_users
 
-	# delete the current user from the session
-	del session["user"]
+	# clear the user's session
+	session.clear()
 	print "session in logout ", session
 
 	# reload the login page
@@ -77,8 +77,10 @@ def refresh_connecteduser_lists():
 	"""tells every connected user to update their connected user list"""
 	global connected_users
 	print "These are the users being told to update: ", connected_users
-	for key in connected_users:
-		send_command('UL', "None", key)
+	if connected_users:
+		for key in connected_users:
+			send_command('UL', "None", key)
+
 
 
 
