@@ -84,6 +84,7 @@
 				{'username': logged_in_user, 
 				 'room': logged_in_user
 				});
+		socket.emit('refresh connected users');
 		console.log("The " + logged_in_user + " is being added to room:" + logged_in_user);
 
 		// when a user's room receives a command
@@ -136,6 +137,16 @@
 	    	$('#log').append('<p>' + response.user + ': ' + response.message + '</p>');
 	    	$("#log").scrollTop($("#log")[0].scrollHeight);
 	    });
+
+		// when a user logs out, run the logout route and send them to the login page
+		$(document).on('click', '#logout', function(event){
+			// alert("woohoo");
+			$("body").load("/logout?user=" + logged_in_user);
+			console.log("logged in user" + logged_in_user);
+			socket.emit('refresh connected users');
+			
+		});
+
 
 
 	});

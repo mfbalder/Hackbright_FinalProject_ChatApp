@@ -22,19 +22,21 @@ def index():
 def login():
 	return render_template("login.html")
 
-@app.route("/logout")
+@app.route('/logout')
 def logout():
 	# delete the current user from the connected_users dictionary
 	global connected_users
-	del connected_users[session["user"]]
-	print "connected_users: ", connected_users
+	user = request.args.get("user")
+	del connected_users[user]
+	print "connected_users in logout: ", connected_users
 
 	# delete the current user from the session
 	del session["user"]
-	print "session ", session
+	print "session in logout ", session
 
 	# reload the login page
-	update_connecteduser_lists()
+	print "This is the list of connected users after %s has logged out" % user
+	print connected_users
 	return render_template("login.html")
 
 @app.route("/set_session")
@@ -57,6 +59,7 @@ def refresh_connected_users():
 	"""Whenever a new user logs into the system, this is called to refresh all users' connected list"""
 	global connected_users
 	user = request.args.get("user")
+	print "user in refresh_users", user
 	return render_template("logged_in_users.html", user=user, users=[x for x in connected_users if x != user])
 
 
@@ -69,8 +72,11 @@ def send_message(message, room):
 def send_command(command, body, room):
 	emit('interpret command', {'command': command, 'body': body}, room=room)
 
-def refresh_connecteduser_lists(connected_users):
+@socketio.on('refresh connected users', namespace='/chat')
+def refresh_connecteduser_lists():
 	"""tells every connected user to update their connected user list"""
+	global connected_users
+	print "These are the users being told to update: ", connected_users
 	for key in connected_users:
 		send_command('UL', "None", key)
 
@@ -103,7 +109,7 @@ def on_join(data):
 	print "connected users in join room", connected_users
 
 	send_message("Success! Connected to %s" % room, room)
-	refresh_connecteduser_lists(connected_users)
+	refresh_connecteduser_lists()
 
 @socketio.on('connect', namespace='/chat')
 def test_connect():
@@ -113,7 +119,7 @@ def test_connect():
 
 @socketio.on('disconnect', namespace='/chat')
 def test_disconnect():
-	print('%s Client disconnected') % session["user"]
+	print('%s Client disconnected') % session.get("user")
 
 if __name__ == '__main__':
     socketio.run(app)
