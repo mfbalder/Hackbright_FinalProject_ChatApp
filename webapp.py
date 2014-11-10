@@ -65,9 +65,9 @@ def on_join(data):
 	room = data['room']
 	join_room(room)
 	print "%s has joined room: %s" % (user, room)
-	if room not in connected_users.get(user):
-		connected_users.setdefault(user, []).append(room)
-	print "connected users in join room", connected_users
+	# if room not in connected_users.get(user):
+	# 	connected_users.setdefault(user, []).append(room)
+	# print "connected users in join room", connected_users
 	emit('message to display', {'message': "Success! Connected to %s" % room, 'user': session['user']}, room=room)
 	for key in connected_users:
 		print key
@@ -75,12 +75,20 @@ def on_join(data):
 
 @socketio.on('connect', namespace='/chat')
 def test_connect():
-	# global connected_users
+	global connected_users
+	room = session['user']
+	if room not in connected_users.get(session['user']):
+		connected_users.setdefault(session['user'], []).append(room)
+	print "connected users in join room", connected_users
 	print('Connected')
 	emit('connected', {'data': 'Connected'})
 
 @socketio.on('disconnect', namespace='/chat')
 def test_disconnect():
+	# global connected_users
+	# room = session['user']
+	# connected_users[session['user']].remove(room)
+	# print connected_users
 	print('%s Client disconnected') % session["user"]
 
 if __name__ == '__main__':

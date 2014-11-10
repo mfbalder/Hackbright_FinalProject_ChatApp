@@ -4,17 +4,12 @@
 
 		<style>
 
-			body {
-				margin: 0 1%;
-				padding: 0;
-			}
-
 			#online_users {
 				display: inline-block;
 				width: 20%;
 				height: 400px;
 				vertical-align: top;
-				border: 1px solid black;
+				/*border: 1px solid black;*/
 				padding: 1% 2%;
 			}
 
@@ -40,6 +35,9 @@
 		</style>
 	</head>
 <body>
+
+	{% extends "base.html" %}
+	{% block body %}
 
 	<div id="online_users">
 		<h4>Connected Users</h4>
@@ -75,12 +73,11 @@
 		// sets the current user and current room
 		var logged_in_user="{{ user }}";
 		var current_room = "";
-		var connected_users = ["{{ users }}"];
-
 
 
 		// connect the socket
 	    var socket = io.connect('http://' + document.domain + ':' + location.port + "/chat");
+
 
 	    // joins the current user to their own personal room
 		socket.emit(
@@ -89,16 +86,6 @@
 				 'room': logged_in_user
 				});
 		console.log("The " + logged_in_user + " is being added to room:" + logged_in_user);
-
-		// tell all clients to update their connected users
-		// for(var i = 0; i < connected_users.length; i++){
-		// 	socket.emit(
-		// 		'receive command',
-		// 		{'command': 'UL',
-		// 		 'body': logged_in_user,
-		// 		 'room': connected_users[i]}
-		// 	);
-		// }
 
 		// when a user's room receives a command
 		socket.on('interpret command', function(data){
@@ -154,6 +141,8 @@
 
 	});
 	</script>
+
+	{% endblock %}
 
 </body>
 <html>

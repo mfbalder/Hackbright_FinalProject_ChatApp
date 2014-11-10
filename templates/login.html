@@ -2,25 +2,6 @@
 <head>
 	<link href='http://fonts.googleapis.com/css?family=Quicksand:400,700' rel='stylesheet' type='text/css'>
 	<style>
-			body {
-				margin: 0;
-				padding: 0;
-				background-color: #ddeeee;
-			}
-
-			#navbar {
-				background-color: #333344;
-				height: 50px;
-				text-align: left;
-				font-size: 28px;
-				font-family: 'Quicksand', sans-serif;
-				color: white;
-			}
-
-			#navbar p {
-				margin-left: 9px;
-				line-height: 50px;
-			}
 
 			#login_box {
 				width: 30%;
@@ -58,9 +39,10 @@
 		</style>
 </head>
 <body>
-	<div id="navbar">
-		<p>Chat Thang</p>
-	</div>
+
+	{% extends "base.html" %}
+	{% block body %}
+
 	<div id="login_box">
 		<p>Login</p>
 		<form id="login_form" action="/set_session">
@@ -80,6 +62,8 @@
 
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+
+	{% endblock %}
 	
 </body>
 </html>
