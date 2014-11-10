@@ -9,9 +9,16 @@ app.secret_key = "ABC"
 # connected_users --> {username: ['room1 they're in', 'room2', 'room3']}
 connected_users = {}
 
+def get_user():
+	try:
+		return session.get("user")
+	except TypeError:
+		return redirect("/login")
+
 @app.route('/')
 def index():
-	user = session.get("user")   # "joel" or None
+	# user = session.get("user")   # "joel" or None
+	user = get_user()
 	# print "index: user=", user
 	users_to_display = [u for u in connected_users if u != user]
 	return render_template('index.html', 
@@ -27,16 +34,17 @@ def logout():
 	# delete the current user from the connected_users dictionary
 	global connected_users
 	user = request.args.get("user")
-	del connected_users[user]
-	print "connected_users in logout: ", connected_users
+	if user:
+		del connected_users[user]
+		print "connected_users in logout: ", connected_users
 
-	# clear the user's session
-	session.clear()
-	print "session in logout ", session
+		# clear the user's session
+		session.clear()
+		print "session in logout ", session
 
-	# reload the login page
-	print "This is the list of connected users after %s has logged out" % user
-	print connected_users
+		# reload the login page
+		print "This is the list of connected users after %s has logged out" % user
+		print connected_users
 	return render_template("login.html")
 
 @app.route("/set_session")
@@ -50,7 +58,7 @@ def set_session():
 	print session
 
 	# add that user to the list of connected users
-	connected_users.setdefault(session["user"], [])
+	connected_users.setdefault(get_user(), [])
 	print "connected users in set_session", connected_users
 	return redirect("/")
 
@@ -106,12 +114,14 @@ def on_join(data):
 	join_room(room)
 	print "%s has joined room: %s" % (user, room)
 
-	if room not in connected_users.get(user):
+	if room not in connected_users.get(user, []):
 		connected_users.setdefault(user, []).append(room)
 	print "connected users in join room", connected_users
-
 	send_message("Success! Connected to %s" % room, room)
 	refresh_connecteduser_lists()
+
+
+	
 
 @socketio.on('connect', namespace='/chat')
 def test_connect():
