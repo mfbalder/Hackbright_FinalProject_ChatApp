@@ -24,11 +24,16 @@ def login():
 
 @app.route("/logout")
 def logout():
+	# delete the current user from the connected_users dictionary
 	global connected_users
 	del connected_users[session["user"]]
 	print "connected_users: ", connected_users
+
+	# delete the current user from the session
 	del session["user"]
 	print "session ", session
+
+	# reload the login page
 	return render_template("login.html")
 
 @app.route("/set_session")
