@@ -11,24 +11,43 @@
 			#navbar {
 				background-color: #333344;
 				height: 50px;
-				text-align: left;
-				font-size: 28px;
 				font-family: 'Quicksand', sans-serif;
 				color: white;
 			}
 
-			#navbar p {
+			#navbar #title {
 				margin-left: 9px;
 				line-height: 50px;
+				text-align: left;
+				display: inline;
+				font-size: 28px;
+			}
+
+			#navbar #logout {
+				text-align: right;
+				display: inline;
+				color: white;
+				text-decoration: none;
 			}
 	</style>
 <body>
 	<div id="navbar">
-		<p>Chat Thang</p>
+		<p id="title">Chat Thang</p>
+		<a href="#" id="logout">Logout</a>
 	</div>
 
+	<div id="page_body">
 	{% block body %}
 	{% endblock %}
+	</div>
+
 	
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script>
+		$("#logout").click(function(event){
+			alert("wtf");
+			$("body").load("/logout");
+		});
+	</script>
 </body>
 </html>
