@@ -28,6 +28,11 @@
 				visibility: hidden;
 			}
 
+			#log {
+				overflow-y: scroll;
+				height: 300px;
+			}
+
 		</style>
 	</head>
 <body>
@@ -60,6 +65,8 @@
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
 	<script>
 	$(document).ready(function(){
+
+
 		// sets the current user and current room
 		var logged_in_user="{{ user }}";
 		var current_room = "";
@@ -136,6 +143,7 @@
 	    // display it in the log
 	    socket.on('message to display', function(response){
 	    	$('#log').append('<p>' + response.user + ': ' + response.message + '</p>');
+	    	$("#log").scrollTop($("#log")[0].scrollHeight);
 	    });
 
 
