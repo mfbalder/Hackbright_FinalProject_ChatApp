@@ -9,16 +9,28 @@ app.secret_key = "ABC"
 # connected_users --> {username: ['room1 they're in', 'room2', 'room3']}
 connected_users = {}
 
+class UserUnAuth(Exception):
+	"""User isn't logged in."""
+
 def get_user():
-	try:
-		return session.get("user")
-	except TypeError:
-		return redirect("/login")
+	# try:
+	# 	return session.get("user")
+	# except TypeError:
+	#   return UserUnAuth 
+	# 	return redirect("/login")
+
+	return session.get("user")
 
 @app.route('/')
 def index():
+	# FIXME: send unauth users to login form
+
 	# user = session.get("user")   # "joel" or None
 	user = get_user()
+	if user is None:
+		return redirect("/login")
+
+
 	# print "index: user=", user
 	users_to_display = [u for u in connected_users if u != user]
 	return render_template('index.html', 
@@ -33,7 +45,8 @@ def login():
 def logout():
 	# delete the current user from the connected_users dictionary
 	global connected_users
-	user = request.args.get("user")
+	# user = request.args.get("user")
+	user = get_user()
 	if user:
 		del connected_users[user]
 		print "connected_users in logout: ", connected_users
@@ -41,11 +54,13 @@ def logout():
 		# clear the user's session
 		session.clear()
 		print "session in logout ", session
+		print "I think you are ", session.get("user")
 
 		# reload the login page
 		print "This is the list of connected users after %s has logged out" % user
 		print connected_users
-	return render_template("login.html")
+	return redirect("/login")
+	# return render_template("login.html")
 
 @app.route("/set_session")
 def set_session():

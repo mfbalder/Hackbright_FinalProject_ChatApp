@@ -193,13 +193,9 @@
 	    	// $(chat_box).scrollTop($(chatbox)[0].scrollHeight);
 	    });
 
-		// when a user logs out, run the logout route and send them to the login page
+		// when a user logs out, tell all users to fresh their conencted list
 		$(document).on('click', '#logout', function(event){
-			// alert("woohoo");
-			$("body").load("/logout?user=" + logged_in_user);
-			console.log("logged in user" + logged_in_user);
-			socket.emit('refresh connected users');
-			
+			socket.emit('refresh connected users');			
 		});
 
 
