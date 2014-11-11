@@ -75,7 +75,7 @@ def refresh_connected_users():
 # socket functions
 
 def send_message(message, room):
-	emit('message to display', {'message': message, 'user': session['user']}, room=room)
+	emit('message to display', {'message': message, 'user': session['user'], 'room': room}, room=room)
 
 def send_command(command, body, room):
 	emit('interpret command', {'command': command, 'body': body}, room=room)
@@ -117,8 +117,18 @@ def on_join(data):
 	if room not in connected_users.get(user, []):
 		connected_users.setdefault(user, []).append(room)
 	print "connected users in join room", connected_users
-	send_message("Success! Connected to %s" % room, room)
+	# send_message("Success! Connected to %s" % room, room)
 	refresh_connecteduser_lists()
+
+@socketio.on('open chat', namespace='/chat')
+def open_chat(data):
+	room = data['room']
+	submitting_user = data['submitting']
+	receiving_user = data['receiving']
+	
+	# open a chat window in both users' windows
+	emit('open chat box', {'template': render_template("chat_box.html", room=room, receiving_user=receiving_user)}, room=submitting_user)
+	emit('open chat box', {'template': render_template("chat_box.html", room=room, receiving_user=receiving_user)}, room=receiving_user)
 
 
 	

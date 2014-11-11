@@ -13,22 +13,25 @@
 				padding: 1% 2%;
 			}
 
-			#chat_box {
+			#chat_section {
 				display: inline-block;
-				width: 60%;
-				height: 400px;
+			}
+			.chat_box {
+				/*display: inline-block;*/
+				width: 400px;
+				/*height: 400px;*/
 			}
 
 			.hidden {
 				visibility: hidden;
 			}
 
-			#log {
+			.log {
 				overflow-y: scroll;
 				height: 300px;
 			}
 
-			#send_message input[type="text"]{
+			.send_message input[type="text"]{
 				width: 300px;
 			}
 
@@ -50,7 +53,8 @@
 		{% endif %}
 	</div>
 
-	<div id="chat_box" class="hidden">
+	<div id="chat_section">
+	<!-- <div class="chat_box hidden">
 
 		<div id="log">
 			<p>Log</p>
@@ -60,7 +64,8 @@
 			<input id="message" type="text" placeholder="Your message">
 			<input type="submit">
 		</form>
-	</div>
+	</div> -->
+</div>
 
 
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -118,25 +123,48 @@
 				var new_room = logged_in_user + user_to_talk_to;
 			}
 
+
 			// send command to user_to_talk_to's room
 			socket.emit('receive command', {'command': 'J', 'body':new_room, 'room': user_to_talk_to});
 			// send command to logged_in_user's room
 			socket.emit('receive command', {'command': 'J', 'body':new_room, 'room': logged_in_user});
+			socket.emit('open chat', {'submitting': logged_in_user, 'receiving': user_to_talk_to, 'room': new_room});
+		});
+
+		socket.on('open chat box', function(event){
+			var html = event.template;
+			$("#chat_section").append(html);
+			return false;
+			// $("#chat_section").append(event)
+		});
+
+		$(document).on('submit', 'form', function(event){
+			event.preventDefault();
+			var this_ = $(this)
+			var chat_room = this_.parent(".chat_box").attr("id");
+			console.log(this);
+			console.log(this_.serialize());
+			console.log(this_.parent(".chat_box").attr("id"))
+			socket.emit('my event', {data: this_.serialize(), 'room': chat_room});
+
+			
 		});
 
 
 	    // when the user sends a message, relay that message to the server
-	    $('form#send_message').submit(function(event){
-	    	event.preventDefault();
-	    	socket.emit('my event', {data: $("#message").val(), 'room': current_room});
-	    	$("#message").val("");
-	    });
+	    // $('form#send_message').submit(function(event){
+	    // 	event.preventDefault();
+	    // 	socket.emit('my event', {data: $("#message").val(), 'room': current_room});
+	    // 	$("#message").val("");
+	    // });
 
 	    // when the client gets that message back from the server,
 	    // display it in the log
 	    socket.on('message to display', function(response){
-	    	$('#log').append('<p>' + response.user + ': ' + response.message + '</p>');
-	    	$("#log").scrollTop($("#log")[0].scrollHeight);
+	    	var chat_room = response.room;
+	    	console.log($("#" + chat_room + " div.log"));
+	    	$("#" + chat_room + " div.log").append('<p>' + response.user + ': ' + response.message + '</p>');
+	    	// $(chat_box).scrollTop($(chatbox)[0].scrollHeight);
 	    });
 
 		// when a user logs out, run the logout route and send them to the login page
