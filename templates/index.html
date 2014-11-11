@@ -142,12 +142,11 @@
 			event.preventDefault();
 			var this_ = $(this)
 			var chat_room = this_.parent(".chat_box").attr("id");
-			console.log(this);
 			console.log(this_.serialize());
-			console.log(this_.parent(".chat_box").attr("id"))
-			socket.emit('my event', {data: this_.serialize(), 'room': chat_room});
-
-			
+			var message = this_.find("input[name='message']").val();
+			// console.log(this_.parent(".chat_box").attr("id"))
+			socket.emit('my event', {data: message, 'room': chat_room});
+			this_.find("input[name='message']").val("");
 		});
 
 
@@ -162,7 +161,7 @@
 	    // display it in the log
 	    socket.on('message to display', function(response){
 	    	var chat_room = response.room;
-	    	console.log($("#" + chat_room + " div.log"));
+	    	// console.log($("#" + chat_room + " div.log"));
 	    	$("#" + chat_room + " div.log").append('<p>' + response.user + ': ' + response.message + '</p>');
 	    	// $(chat_box).scrollTop($(chatbox)[0].scrollHeight);
 	    });
