@@ -1,5 +1,5 @@
 <div class="chat_box" id="{{ room }}">
-
+		<button class="end_chat">End Chat</button>
 		<div class="log">
 			<p>Chat Between You and {{ receiving_user }}</p>
 		</div>
@@ -7,5 +7,7 @@
 		<form class="send_message">
 			<input name="message" type="text" placeholder="Your message">
 			<input type="submit">
+			<input type="button" class="encrypt_chat" value="Encrypt Chat">
 		</form>
+
 	</div>
