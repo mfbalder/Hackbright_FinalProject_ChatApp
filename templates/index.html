@@ -28,10 +28,16 @@
 </div>
 
 
+
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
 	<script>
 	$(document).ready(function(){
+
+
+
+
 
 
 		// sets the current user and current room
@@ -92,10 +98,10 @@
 		});
 
 		socket.on('open chat box', function(event){
+	
 			var html = event.template;
 			$("#chat_section").append(html);
 			return false;
-			// $("#chat_section").append(event)
 		});
 
 		$(document).on('submit', 'form', function(event){
@@ -123,7 +129,7 @@
 	    	var chat_room = response.room;
 	    	// console.log($("#" + chat_room + " div.log"));
 	    	$("#" + chat_room + " div.log").append('<p>' + response.user + ': ' + response.message + '</p>');
-	    	// $(chat_box).scrollTop($(chatbox)[0].scrollHeight);
+	    	$(".log").scrollTop($(".log")[0].scrollHeight);
 	    });
 
 		// when a user logs out, tell all users to fresh their conencted list

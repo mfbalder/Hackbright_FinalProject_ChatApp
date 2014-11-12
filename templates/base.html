@@ -2,7 +2,7 @@
 <head>
 	<title>Online Instant Messaging Program</title>
 	<link href='http://fonts.googleapis.com/css?family=Viga|Anton|Pacifico|Changa+One|Righteous|Chewy' rel='stylesheet' type='text/css'>
-
+	<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
 	<style>
 	   {% block extracss %}{% endblock %}
 	</style>
@@ -142,11 +142,18 @@
 
 			#chat_section {
 				display: inline-block;
+				margin-top: 3%;
+				width: 65%;
 			}
 			.chat_box {
-				/*display: inline-block;*/
-				width: 400px;
+				display: inline-block;
+				width: 43%;
 				/*height: 400px;*/
+				background-color: #ECDFBD;
+				padding: 1%;
+				margin: 1% 2%;
+				font-family: 'Viga', sans-serif;
+
 			}
 
 
@@ -157,6 +164,11 @@
 
 			.send_message input[type="text"]{
 				width: 300px;
+			}
+
+			#tabs {
+				display: inline-block;
+				margin-top: 3%;
 			}
 
 
