@@ -41,6 +41,15 @@ def index():
 def login():
 	return render_template("login.html")
 
+@app.route("/signup_form")
+def signup_form():
+	return render_template("signup.html")
+
+@app.route("/signup_user")
+def signup_user():
+	pass
+
+
 @app.route('/logout')
 def logout():
 	# delete the current user from the connected_users dictionary
