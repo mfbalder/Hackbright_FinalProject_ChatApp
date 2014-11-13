@@ -154,8 +154,8 @@ def open_chat(data):
 	receiving_user = data['receiving']
 	
 	# open a chat window in both users' windows
-	emit('open chat box', {'template': render_template("chat_box.html", room=room, receiving_user=receiving_user), 'receiving_user': receiving_user}, room=submitting_user)
-	emit('open chat box', {'template': render_template("chat_box.html", room=room, receiving_user=submitting_user)}, room=receiving_user)
+	emit('open chat box', {'template': render_template("chat_box.html", room=room, receiving_user=receiving_user), 'receiving_user': receiving_user, 'chat_room': room}, room=submitting_user)
+	emit('open chat box', {'template': render_template("chat_box.html", room=room, receiving_user=submitting_user), 'chat_room': room}, room=receiving_user)
 
 
 	

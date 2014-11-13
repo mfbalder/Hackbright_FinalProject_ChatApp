@@ -94,12 +94,18 @@
 			// send command to logged_in_user's room
 			socket.emit('receive command', {'command': 'J', 'body':new_room, 'room': logged_in_user});
 			socket.emit('open chat', {'submitting': logged_in_user, 'receiving': user_to_talk_to, 'room': new_room});
+
 		});
 
 		socket.on('open chat box', function(event){
-	
-			var html = event.template;
-			$("#chat_section").append(html);
+			if($("#" + event.chat_room).length === 0){
+				console.log("The chatroom doesn't exist yet, add it");
+				var html = event.template;
+				$("#chat_section").append(html);
+			}
+			else {
+				console.log("The chatroom already exists. Don't add it");
+			}
 			return false;
 		});
 
