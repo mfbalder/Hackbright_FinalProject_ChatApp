@@ -113,6 +113,15 @@
 			this_.find("input[name='message']").val("");
 		});
 
+		// if the user closes the window, remove it from their DOM
+		$(document).on('click', '.end_chat', function(event){
+			// send a message telling the other user that the chat has been exited
+			socket.emit("my event", {data: logged_in_user + " has left the chat.", 'room': $(this).parent(".chat_box").attr("id")});
+			$(this).parent(".chat_box").remove();
+			// remove the user from that joint room
+		});
+
+
 
 	    // when the user sends a message, relay that message to the server
 	    // $('form#send_message').submit(function(event){
