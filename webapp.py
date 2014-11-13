@@ -109,6 +109,8 @@ def complete_pubkey_exchange(data):
 @socketio.on('initiate pubkey exchange', namespace='/chat')
 def receive_pubkey(data):
 	send_command('PUK', {'key':data["key"], 'encrypted_room':data["encrypted_room"]}, data["receiving_user"], data["sending_user"])
+	message = "%s has initiated encryption for this conversation. Click 'Encrypt Chat' to complete" % data["sending_user"]
+	send_message(message, data["encrypted_room"])
 
 @socketio.on('refresh connected users', namespace='/chat')
 def refresh_connecteduser_lists():

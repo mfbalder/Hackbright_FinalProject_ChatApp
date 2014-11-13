@@ -51,7 +51,7 @@
 			var command = data.command
 			var command_body = data.body
 			var command_origin = data.origin
-			console.log(command + " " + command_body);
+
 			// if that command is a J (for join), join them to the given room
 			if(command == 'J'){
 				console.log("join");
@@ -61,17 +61,18 @@
 				// establish that this new room is the room we're currently talking in
 				current_room = new_room
 			}
-			// if the user receives a UL command, refresh their list of connected users
+			// if the user receives a UL (update list) command, refresh their list of connected users
 			if(command == 'UL'){
 				$("#online_users").load("/refresh_users?user=" + logged_in_user);
 			}
+			// if the command is "public key"
 			if(command == "PUK"){
 				// set your received public key
 				other_public_key = command_body["key"];
 				console.log("public key received: " + other_public_key);
 				// generate your own set of keys
-				generateKeys();
-				socket.emit('complete pubkey exchange', {'key': user_public_key, 'receiving_user': command_origin, 'sending_user': logged_in_user, 'encrypted_room': command_body["encrypted_room"]});
+				// generateKeys();
+				// socket.emit('complete pubkey exchange', {'key': user_public_key, 'receiving_user': command_origin, 'sending_user': logged_in_user, 'encrypted_room': command_body["encrypted_room"]});
 
 			}
 		});
@@ -108,8 +109,18 @@
 			var chat_room = this_.parent(".chat_box").attr("id");
 			console.log(this_.serialize());
 			var message = this_.find("input[name='message']").val();
+			if(this_.hasClass("encrypted")){
+				console.log("do encryption now!");
+				// Encrypt with the public key...
+          		var encrypt = new JSEncrypt();
+          		encrypt.setPublicKey(other_public_key);
+          		var encrypted = encrypt.encrypt(message);
+          		socket.emit('my event', {data: encrypted, 'room': chat_room});
+			}
+			else{
 			// console.log(this_.parent(".chat_box").attr("id"))
-			socket.emit('my event', {data: message, 'room': chat_room});
+				socket.emit('my event', {data: message, 'room': chat_room});
+			}
 			this_.find("input[name='message']").val("");
 		});
 
