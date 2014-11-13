@@ -72,6 +72,7 @@
 				// generate your own set of keys
 				generateKeys();
 				socket.emit('complete pubkey exchange', {'key': user_public_key, 'receiving_user': command_origin, 'sending_user': logged_in_user, 'encrypted_room': command_body["encrypted_room"]});
+
 			}
 		});
 
@@ -133,6 +134,7 @@
 	    	var chat_room = response.room;
 	    	$("#" + chat_room + " div.log").append('<p>' + response.message + '</p>');
 	    	$(".log").scrollTop($(".log")[0].scrollHeight);
+	    	$("#" + chat_room + " .send_message").addClass("encrypted");
 	    });
 
 		// when a user logs out, tell all users to fresh their conencted list
@@ -164,6 +166,7 @@
 			var receiving_pubkey = $(this).parents(".send_message").find("input[type='hidden']").attr("value");
 			console.log(receiving_pubkey);
 			socket.emit('initiate pubkey exchange', {'key': user_public_key, 'receiving_user': receiving_pubkey, 'sending_user': logged_in_user, 'encrypted_room': encrypted_room});
+			// $(this).parents(".send_message").addClass("encrypted");
 
 		});
 		
