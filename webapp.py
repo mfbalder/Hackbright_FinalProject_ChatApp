@@ -92,8 +92,23 @@ def refresh_connected_users():
 def send_message(message, room):
 	emit('message to display', {'message': message, 'user': session['user'], 'room': room}, room=room)
 
-def send_command(command, body, room):
-	emit('interpret command', {'command': command, 'body': body}, room=room)
+def send_command(command, body, room, origin=None):
+	emit('interpret command', {'command': command, 'body': body, 'origin': origin}, room=room)
+
+
+
+# socket events
+
+@socketio.on('complete pubkey exchange', namespace='/chat')
+def complete_pubkey_exchange(data):
+	print data
+	emit('app message display', {'message': "Your chat has been encrypted!", 'user': session['user'], 'room': data["encrypted_room"]}, room=data["encrypted_room"])
+	# send_message("Your chat has been encrypted!", data["encrypted_room"])
+
+
+@socketio.on('initiate pubkey exchange', namespace='/chat')
+def receive_pubkey(data):
+	send_command('PUK', {'key':data["key"], 'encrypted_room':data["encrypted_room"]}, data["receiving_user"], data["sending_user"])
 
 @socketio.on('refresh connected users', namespace='/chat')
 def refresh_connecteduser_lists():
@@ -103,11 +118,6 @@ def refresh_connecteduser_lists():
 	if connected_users:
 		for key in connected_users:
 			send_command('UL', "None", key)
-
-
-
-
-# socket events
 
 @socketio.on('my event', namespace='/chat')
 def test_message(message):
