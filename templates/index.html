@@ -102,6 +102,56 @@
 				console.log("The chatroom doesn't exist yet, add it");
 				var html = event.template;
 				$("#chat_section").append(html);
+
+				function handleFiles(files) {
+  for (var i = 0; i < files.length; i++) {
+    var file = files[i];
+    var imageType = /image.*/;
+    
+    if (!file.type.match(imageType)) {
+      continue;
+    }
+    
+    var img = document.createElement("img");
+    img.classList.add("obj");
+    img.file = file;
+    $(".log").append(img); // Assuming that "preview" is a the div output where the content will be displayed.
+    
+    var reader = new FileReader();
+    reader.onload = (function(aImg) { return function(e) { aImg.src = e.target.result; }; })(img);
+    reader.readAsDataURL(file);
+  }
+}
+
+				var dropbox = document.getElementById("dropbox");
+				console.log(dropbox);
+				dropbox.addEventListener("dragenter", dragenter, false);
+				dropbox.addEventListener("dragover", dragover, false);
+				dropbox.addEventListener("drop", drop, false);
+
+				function dragenter(e) {
+					e.stopPropagation();
+					e.preventDefault();
+				}
+
+				function dragover(e) {
+					e.stopPropagation();
+					e.preventDefault();
+				}
+
+				function drop(e) {
+					console.log("drop");
+		  			e.stopPropagation();
+		  			e.preventDefault();
+
+		  			var dt = e.dataTransfer;
+		  			console.log("dt" + dt)
+		  			var files = dt.files;
+		  			console.log("files" + files)
+
+		  			handleFiles(files);
+		  			console.log("fileList" + fileList)
+				}
 			}
 			else {
 				console.log("The chatroom already exists. Don't add it");
@@ -195,6 +245,8 @@
 			// $(this).parents(".send_message").addClass("encrypted");
 
 		});
+
+
 		
 
 
